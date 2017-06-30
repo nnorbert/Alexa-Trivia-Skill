@@ -1,0 +1,27 @@
+{
+  "name": "alexa",
+  "version": "1.0.0",
+  "description": "Alexa skills server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nnorbert/Alexa-Trivia-Skill.git"
+  },
+  "keywords": [
+    "Alexa",
+    "skill",
+    "trivia"
+  ],
+  "author": "Nagy Norbert",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nnorbert/Alexa-Trivia-Skill/issues"
+  },
+  "homepage": "https://github.com/nnorbert/Alexa-Trivia-Skill#readme",
+  "dependencies": {
+    "alexa-app-server": "^3.0.1"
+  }
+}
