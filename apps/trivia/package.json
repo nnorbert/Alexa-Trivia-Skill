@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "alexa-app": "^4.0.1",
-    "request-promise": "^4.2.1",
-    "sync-request": "^4.1.0"
+    "request-promise": "^4.2.1"
   }
 }
