@@ -1,0 +1,19 @@
+{
+  "name": "trivia",
+  "version": "1.0.0",
+  "description": "Trivia game skill",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "alexa": {
+    "applicationId": "amzn1.ask.skill.6ecc2c94-1654-4660-be94-62de4f2a8cbb"
+  },
+  "dependencies": {
+    "alexa-app": "^4.0.1",
+    "request-promise": "^4.2.1",
+    "sync-request": "^4.1.0"
+  }
+}
