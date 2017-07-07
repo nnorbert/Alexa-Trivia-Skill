@@ -1,10 +1,18 @@
 var alexa = require('alexa-app');
 var rp = require('request-promise');
+var db = require('promise-mysql');
+var config = require('./config');
+
+config.db_credentials.database = "trivia";
 
 module.change_code = 1;
 
-// VARS
+var id = "amzn1.ask.account.AE3DFDHRHAUZTVGYWSTUE5734WHJNEI4MJMANJ5WVZ57DMIMMMOAYV6BHWIH76WGB56CKRRXYZWA4BPLPHH6E7EHQGU4FL4UXD4B5MOIA6FXKP7I7TR462RZWRHKLR2NO4ZAXQYNGGANGATF3FR4EFMU6FKII274NDY37NSGET5YWVAZ236HNHR4NFRD2F3XV23C33C4ST5B7DA";
 
+sessionUpdate(id);
+restoreSession(id, {});
+
+// VARS
 // CATEGORIES
 var triviaAPI = 'https://opentdb.com/api.php?amount=10&category={CATEGORY}&difficulty={DIFFICULTY}&type=multiple';
 var triviaCategories = {
@@ -210,6 +218,8 @@ app.intent("StartGameIntent", {
   var session = request.getSession();
   var playerData = session.get('playerData');
   playerData = JSON.parse(playerData);
+
+  console.log(request.userId);
 
   if (playerData.started) {
     response
@@ -442,4 +452,61 @@ function checkAnswer(playerData, answer) {
   answer = answer.toUpperCase();
 
   return answerMarks.indexOf(answer) == currentQuestion.shuffledAnswers.indexOf(currentQuestion.correct_answer);
+}
+
+// DB OPERATIONS
+function deleteSession(id) {
+  var connection;
+  db.createConnection(config.db_credentials)
+    .then(function(conn){
+      connection = conn;
+      var result = connection.query('DELETE FROM session WHERE uid="' + id + '"');
+      connection.end();
+      return result;
+    });
+}
+
+function sessionUpdate(id, data) {
+  var connection;
+  db.createConnection(config.db_credentials)
+    .then(function(conn){
+      connection = conn;
+      var result = connection.query('SELECT id FROM session WHERE uid="' + id + '"');
+      return result;
+    }).then(function(rows){
+      if (rows.length) {
+        // UPDATE
+        connection.query("UPDATE session SET data='" + JSON.stringify(data) + "' WHERE uid='" + id + "'");
+        connection.end();
+      }
+      else {
+        // INSERT
+        connection.query("INSERT INTO session (uid, data) VALUES ('" + id + "', '" + JSON.stringify(data) + "')");
+        connection.end();
+      }
+    });
+}
+
+function restoreSession(id, session) {
+
+  var connection;
+  db.createConnection(config.db_credentials)
+    .then(function(conn){
+      connection = conn;
+      var result = connection.query('SELECT data FROM session WHERE uid="' + id + '"');
+      connection.end();
+      return result;
+    }).then(function(rows){
+      if (rows.length) {
+        // RESTORE
+        // session.set("playerData", JSON.stringify(playerData));
+        console.log(rows[0].data);
+        var buffer = new Buffer( rows[0].data );
+        var bufferBase64 = buffer.toString('base64');
+        console.log(bufferBase64);
+      }
+      else {
+        // nothing to restore
+      }
+    });
 }
